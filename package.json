@@ -2,6 +2,9 @@
   "name": "apib-confluencer",
   "version": "1.0.0",
   "description": "A tool for rendering api blueprint files and updating them to confluence",
+  "bin": {
+    "apib-confluencer": "./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/nickel715/apib-confluencer.git"
@@ -19,6 +22,7 @@
   },
   "homepage": "https://github.com/nickel715/apib-confluencer",
   "dependencies": {
-    "apiblueprint-to-confluence-english": "^1.2"
+    "apiblueprint-to-confluence-english": "^1.2",
+    "confluence-api": "^1.1.0"
   }
 }
