@@ -1,15 +1,27 @@
 #!/usr/bin/env node
 
-const os = require('os');
+const osHomedir = require('os-homedir');
 
-var config = require(os.homedir() + '/.apib_confluencer'),
+var config = require(osHomedir() + '/.apib_confluencer'),
     localConfig = require('./apib_confluencer');
 
-Object.keys(localConfig).forEach(function(file) {
-    render(file, function(error, stdout, stderr) {
-        update(config.confluence, localConfig[file].pageId, stdout);
+if (!config.confluence.password) {
+    var read = require('read'), password
+    read({ prompt: 'Confluence password: ', silent: true }, function(er, input) {
+        config.confluence.password = input
+        run();
     })
-})
+} else {
+    run()
+}
+
+function run() {
+    Object.keys(localConfig).forEach(function(file) {
+        render(file, function(error, stdout, stderr) {
+            update(config.confluence, localConfig[file].space, localConfig[file].pageId, stdout)
+        })
+    })
+}
 
 function render(file, success) {
     var exec = require('child_process').exec;
@@ -17,16 +29,16 @@ function render(file, success) {
     exec(cmd, success);
 }
 
-function update(config, pageId, content) {
+function update(config, space, pageId, content) {
     var Confluence = require("confluence-api");
-    console.log('Update ' + pageId);
-    console.log('Content ' + content);
     var confluence = new Confluence(config);
     confluence.getContentById(pageId, function(err, data) {
         // do something interesting with data; for instance,
         // data.results[0].body.storage.value contains the stored markup for the first
         // page found in space 'space-name' matching page title 'page-title'
-        console.log(data);
-        //confluence.putContent("space", pageId, "version++", title, content);
-    });
+        // console.log(data);
+        confluence.putContent(space, pageId, data.version.number + 1, data.title, content, function() {
+            console.log('Page updated')
+        })
+    })
 }
