@@ -24,7 +24,8 @@ Create a project config `apib_confluencer.json` in your project root like:
 ```json
 {
     "myapi.apib": {
-        "pageId": 12345
+        "pageId": 12345,
+        "space": "ABC"
     }
 }
 ```
