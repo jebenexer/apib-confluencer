@@ -3,7 +3,7 @@
 const osHomedir = require('os-homedir');
 
 var config = require(osHomedir() + '/.apib_confluencer'),
-    localConfig = require('./apib_confluencer');
+    localConfig = require(process.cwd() + '/apib_confluencer');
 
 if (!config.confluence.password) {
     var read = require('read'), password
