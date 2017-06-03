@@ -3,7 +3,7 @@
 const osHomedir = require('os-homedir');
 
 var config = require(osHomedir() + '/.apib_confluencer'),
-    localConfig = require('./apib_confluencer');
+    localConfig = require(process.cwd() + '/apib_confluencer');
 
 if (!config.confluence.password) {
     var read = require('read'), password
@@ -37,8 +37,13 @@ function update(config, space, pageId, content) {
         // data.results[0].body.storage.value contains the stored markup for the first
         // page found in space 'space-name' matching page title 'page-title'
         // console.log(data);
-        confluence.putContent(space, pageId, data.version.number + 1, data.title, content, function() {
-            console.log('Page updated')
+        confluence.putContent(space, pageId, data.version.number + 1, data.title, content, function(err, res) {
+            if(!err) {
+                console.log('Page updated')
+            } else {
+                console.log('Error: ' + err);
+                console.log('Response: ' + JSON.stringify(res));
+            }
         })
     })
 }
